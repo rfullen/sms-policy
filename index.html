@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apartment 101 — SMS Sign-Up</title>
+<style>
+  body { font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+         max-width: 40rem; margin: 3rem auto; padding: 0 1.25rem; color: #1c1f24; }
+  h1 { font-size: 1.5rem; margin-bottom: .25rem; }
+  .sub { color: #5d626b; margin-top: 0; }
+  h2 { font-size: 1.05rem; margin-top: 2rem; }
+  form { margin-top: 1.5rem; border: 1px solid #dcdbd2; border-radius: 8px;
+         padding: 1.25rem; background: #fbfbf9; }
+  label.field { display: block; font-weight: 600; margin-bottom: .35rem; }
+  input[type=tel] { width: 100%; box-sizing: border-box; font: inherit;
+                    padding: .55rem .7rem; border: 1px solid #b9bdc4;
+                    border-radius: 5px; }
+  .consent { display: flex; gap: .65rem; align-items: flex-start; margin-top: 1.25rem; }
+  .consent input { margin-top: .35rem; width: 1.05rem; height: 1.05rem; flex: none; }
+  .consent span { font-size: .9375rem; }
+  .optional { color: #5d626b; font-size: .875rem; margin-top: .75rem; }
+  button { font: inherit; font-weight: 600; margin-top: 1.25rem; padding: .6rem 1.15rem;
+           border: 0; border-radius: 5px; background: #1c1f24; color: #fff; cursor: pointer; }
+  #result { margin-top: 1.25rem; padding: .9rem 1rem; border-radius: 6px;
+            background: #eef2ec; border: 1px solid #c5d2c0; font-size: .9375rem; }
+  #result[hidden] { display: none; }
+  footer { margin-top: 3rem; color: #878c95; font-size: .875rem;
+           border-top: 1px solid #dcdbd2; padding-top: 1rem; }
+  a { color: #1c1f24; }
+</style>
+</head>
+<body>
+
+<h1>Apartment 101</h1>
+<p class="sub">Personal assistant messaging, operated by Rocky Fullen</p>
+
+<h2>What this is</h2>
+<p>
+  Apartment 101 is a personal assistant system run by Rocky Fullen on his own
+  hardware. It answers questions, keeps reminders, and reports the status of his
+  home. It is reached by voice call, through its app, and — for anyone who signs
+  up below — by text message.
+</p>
+
+<h2>What texts you would get</h2>
+<p>
+  Reminders you have asked it to keep, answers to questions you text in, and
+  notices about your own home system. Message frequency varies and is low volume.
+  Nothing is sent for marketing or promotion, and no third party sends messages
+  through this number.
+</p>
+
+<h2>Sign up for text messages</h2>
+
+<form id="optin">
+  <label class="field" for="phone">Your mobile number</label>
+  <input type="tel" id="phone" name="phone" placeholder="+1 555 555 5555"
+         autocomplete="tel" required>
+
+  <div class="consent">
+    <input type="checkbox" id="consent" name="consent">
+    <span>
+      <strong>Yes, text me.</strong> I agree to receive text messages from
+      Apartment 101 (operated by Rocky Fullen) at the mobile number above,
+      including reminders I have set, answers to messages I send, and notices
+      about my home system. Message frequency varies and is low volume. Message
+      and data rates may apply. Reply <strong>STOP</strong> to opt out at any
+      time, or <strong>HELP</strong> for help.
+    </span>
+  </div>
+
+  <p class="optional">
+    Text messages are optional. Consent to receive them is not required to use
+    Apartment 101 — it works over voice call and through its app either way — and
+    is not a condition of any purchase. Ticking the box above is separate from,
+    and not bundled with, the
+    <a href="terms.html">Terms and Conditions</a> or the
+    <a href="privacy.html">Privacy Policy</a>.
+  </p>
+
+  <button type="submit">Sign up</button>
+</form>
+
+<div id="result" hidden></div>
+
+<h2>Stopping messages</h2>
+<p>
+  Reply <strong>STOP</strong> to any message to stop receiving them. Reply
+  <strong>HELP</strong> for help. You can sign up again here at any time.
+</p>
+
+<h2>Policies</h2>
+<p>
+  <a href="privacy.html">Privacy Policy</a> &middot;
+  <a href="terms.html">Terms and Conditions</a>
+</p>
+
+<footer>
+  Apartment 101 is operated by Rocky Fullen, Fort Worth, Texas.<br>
+  Last updated 1 August 2026.
+</footer>
+
+<script>
+  var form = document.getElementById('optin');
+  var out  = document.getElementById('result');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var phone   = document.getElementById('phone').value.trim();
+    var consent = document.getElementById('consent').checked;
+
+    if (!consent) {
+      out.hidden = false;
+      out.textContent = 'No text messages will be sent to ' + phone +
+        '. You have not consented to SMS, and nothing further is needed — ' +
+        'Apartment 101 still works by voice call and through its app.';
+      return;
+    }
+
+    var when = new Date().toISOString();
+    try {
+      localStorage.setItem('a101-sms-consent',
+        JSON.stringify({ phone: phone, consented: true, at: when }));
+    } catch (err) { /* private browsing — the confirmation below still stands */ }
+
+    out.hidden = false;
+    out.textContent = 'Thank you. Consent recorded on this device at ' + when +
+      ' for ' + phone + '. Enter this number in the Apartment 101 settings to ' +
+      'finish enrolling it. Reply STOP to any message to opt out.';
+  });
+</script>
+
+</body>
+</html>
